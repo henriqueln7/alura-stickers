@@ -18,9 +18,14 @@ public class App {
         List<Map<String, String>> movies = JsonParser.parse(send.body());
 
         for (Map<String, String> movie : movies) {
-            System.out.println("title: " + movie.get("title"));
-            System.out.println("image: " + movie.get("image"));
-            System.out.println("imDbRating: " + movie.get("imDbRating"));
+            System.out.println("title: \u001b[1m" + movie.get("title") + " \u001b[m");
+            System.out.println("image: \u001b[1m" + movie.get("image") + " \u001b[m");
+            System.out.println("\u001b[45m \u001b[30mimDbRating: \u001b[1m" + movie.get("imDbRating") + " \u001b[m");
+            int imDbRatingFloor = (int) Math.floor(Double.parseDouble(movie.get("imDbRating")));
+            for (int i = 0; i < imDbRatingFloor; i++) {
+                System.out.print("\uD83C\uDF1F");
+            }
+            System.out.println();
             System.out.println("---");
         }
 
