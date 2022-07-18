@@ -21,11 +21,16 @@ public class App {
             System.out.println("title: \u001b[1m" + movie.get("title") + " \u001b[m");
             System.out.println("image: \u001b[1m" + movie.get("image") + " \u001b[m");
             System.out.println("\u001b[45m \u001b[30mimDbRating: \u001b[1m" + movie.get("imDbRating") + " \u001b[m");
-            int imDbRatingFloor = (int) Math.floor(Double.parseDouble(movie.get("imDbRating")));
-            for (int i = 0; i < imDbRatingFloor; i++) {
-                System.out.print("\uD83C\uDF1F");
+            String imDbRating = movie.get("imDbRating");
+            if (imDbRating == null || imDbRating.isBlank()) {
+                System.out.println("Ainda não há avaliação para o filme.");
+            } else {
+                int imDbRatingFloor = (int) Math.floor(Double.parseDouble(imDbRating));
+                for (int i = 0; i < imDbRatingFloor; i++) {
+                    System.out.print("\uD83C\uDF1F");
+                }
+                System.out.println();
             }
-            System.out.println();
             System.out.println("---");
         }
 
