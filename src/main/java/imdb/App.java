@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.http.*;
 import java.util.List;
 
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.*;
 import static java.net.http.HttpResponse.BodyHandlers;
 
 public class App {
@@ -19,16 +21,16 @@ public class App {
         List<IMDBTopMovieResponse> movies = JsonParser.parse(send.body());
 
         for (IMDBTopMovieResponse movie : movies) {
-            System.out.println("title: \u001b[1m" + movie.title() + " \u001b[m");
-            System.out.println("image: \u001b[1m" + movie.image() + " \u001b[m");
-            System.out.println("\u001b[45m \u001b[30mimDbRating: \u001b[1m" + movie.imdbRating() + " \u001b[m");
+            System.out.println("Título: " + colorize(movie.title(), BOLD()));
+            System.out.println("Poster: " + colorize(movie.image(), BOLD()));
+            System.out.println(colorize("Avaliação: " + movie.imdbRating(), MAGENTA_BACK(), BLACK_TEXT()));
             Double imDbRating = movie.imdbRating();
             if (imDbRating == null) {
                 System.out.println("Ainda não há avaliação para o filme.");
             } else {
                 int imDbRatingFloor = (int) Math.floor(imDbRating);
                 for (int i = 0; i < imDbRatingFloor; i++) {
-                    System.out.print("\uD83C\uDF1F");
+                    System.out.print("🌟");
                 }
                 System.out.println();
             }
