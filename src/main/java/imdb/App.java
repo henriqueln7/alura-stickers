@@ -4,6 +4,7 @@ import imdb.JsonParser.IMDBTopMovieResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.*;
 import java.util.List;
 
@@ -24,10 +25,13 @@ public class App {
         }
         List<IMDBTopMovieResponse> movies = JsonParser.parse(httpResponse.body());
 
+        StickerGenerator stickerGenerator = new StickerGenerator();
+
         for (IMDBTopMovieResponse movie : movies) {
             System.out.println("Título: " + colorize(movie.title(), BOLD()));
             System.out.println("Poster: " + colorize(movie.image(), BOLD()));
             System.out.println(colorize("Avaliação: " + movie.imdbRating(), MAGENTA_BACK(), BLACK_TEXT()));
+            stickerGenerator.generateSticker(new URL(movie.image()).openStream(), movie.title() + ".jpg");
             Double imDbRating = movie.imdbRating();
             if (imDbRating == null) {
                 System.out.println("Ainda não há avaliação para o filme.");
