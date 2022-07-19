@@ -17,8 +17,12 @@ public class App {
         String url = "https://imdb-api.com/en/API/Top250Movies/" + apikey;
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
-        HttpResponse<String> send = httpClient.send(request, BodyHandlers.ofString());
-        List<IMDBTopMovieResponse> movies = JsonParser.parse(send.body());
+        HttpResponse<String> httpResponse = httpClient.send(request, BodyHandlers.ofString());
+        if (httpResponse.statusCode() >= 400) {
+            System.out.println("Houve algum problema ao conectar com a API :')");
+            return;
+        }
+        List<IMDBTopMovieResponse> movies = JsonParser.parse(httpResponse.body());
 
         for (IMDBTopMovieResponse movie : movies) {
             System.out.println("Título: " + colorize(movie.title(), BOLD()));
