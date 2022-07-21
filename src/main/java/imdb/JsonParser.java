@@ -21,7 +21,7 @@ public class JsonParser {
 
     private record IMDBTop250MoviesResponse(List<IMDBTopMovieResponse> items, String errorMessage) {}
 
-    record IMDBTopMovieResponse(String id, int rank, String title, String fullTitle, int year, String image, String crew,
+    record IMDBTopMovieResponse(String id, int rank, String title, String fullTitle, int year, @JsonProperty("image") String thumbnailImageUrl, String crew,
                                 @JsonProperty("imDbRating") Double imdbRating,
                                 @JsonProperty("imDbRatingCount") Double imdbRatingCount) {
     }

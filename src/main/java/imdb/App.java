@@ -15,7 +15,7 @@ import static java.net.http.HttpResponse.BodyHandlers;
 public class App {
     public static void main(String[] args) throws IOException, InterruptedException {
         String apikey = System.getenv("IMDB_API_KEY");
-        String url = "https://imdb-api.com/en/API/Top250Movies/" + apikey;
+        String url = "https://api.mocki.io/v2/549a5d8b/Top250Movies";
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
         HttpResponse<String> httpResponse = httpClient.send(request, BodyHandlers.ofString());
@@ -29,9 +29,9 @@ public class App {
 
         for (IMDBTopMovieResponse movie : movies) {
             System.out.println("Título: " + colorize(movie.title(), BOLD()));
-            System.out.println("Poster: " + colorize(movie.image(), BOLD()));
+            System.out.println("Poster: " + colorize(movie.thumbnailImageUrl(), BOLD()));
             System.out.println(colorize("Avaliação: " + movie.imdbRating(), MAGENTA_BACK(), BLACK_TEXT()));
-            stickerGenerator.generateSticker(new URL(movie.image()).openStream(), movie.title() + ".jpg");
+            stickerGenerator.generateSticker(new URL(movie.thumbnailImageUrl()).openStream(), movie.title() + ".jpg");
             Double imDbRating = movie.imdbRating();
             if (imDbRating == null) {
                 System.out.println("Ainda não há avaliação para o filme.");
