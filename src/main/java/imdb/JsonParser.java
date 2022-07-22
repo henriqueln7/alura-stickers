@@ -1,29 +1,43 @@
 package imdb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JsonParser {
 
     private JsonParser() {}
 
-    public static List<IMDBTopMovieResponse> parse(String json) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.IGNORE_UNDEFINED, true);
-        IMDBTop250MoviesResponse map = mapper.readValue(json, IMDBTop250MoviesResponse.class);
-        return map.items;
-    }
+    private static final Pattern REGEX_ITEMS = Pattern.compile(".*\\[(.+)\\].*");
+    private static final Pattern REGEX_ATRIBUTOS_JSON = Pattern.compile("\"(.+?)\":\"(.*?)\"");
 
-    private record IMDBTop250MoviesResponse(List<IMDBTopMovieResponse> items, String errorMessage) {}
+    public static List<Map<String, String>> parse(String json) {
 
-    record IMDBTopMovieResponse(String id, int rank, String title, String fullTitle, int year, @JsonProperty("image") String thumbnailImageUrl, String crew,
-                                @JsonProperty("imDbRating") Double imdbRating,
-                                @JsonProperty("imDbRatingCount") Double imdbRatingCount) {
+        Matcher matcher = REGEX_ITEMS.matcher(json);
+        if (!matcher.find()) {
+            throw new RuntimeException("Items not found");
+        }
+
+        String[] items = matcher.group(1).split("\\},\\{");
+
+        List<Map<String, String>> dados = new ArrayList<>();
+
+        for (String item : items) {
+
+            Map<String, String> atributosItem = new HashMap<>();
+
+            Matcher matcherAtributosJson = REGEX_ATRIBUTOS_JSON.matcher(item);
+            while (matcherAtributosJson.find()) {
+                String atributo = matcherAtributosJson.group(1);
+                String valor = matcherAtributosJson.group(2);
+                atributosItem.put(atributo, valor);
+            }
+
+            dados.add(atributosItem);
+        }
+
+        return dados;
+
     }
 
 }
