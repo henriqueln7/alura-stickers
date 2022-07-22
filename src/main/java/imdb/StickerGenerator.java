@@ -3,15 +3,15 @@ package imdb;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.nio.file.*;
 
 import static java.awt.image.BufferedImage.TRANSLUCENT;
 
 public class StickerGenerator {
-    public void generateSticker(InputStream inputStream, String outputFilename) throws IOException {
-        BufferedImage originalImage = ImageIO.read(inputStream);
+    public void generateSticker(Content content) throws IOException {
+        BufferedImage originalImage = ImageIO.read(new URL(content.imageUrl()).openStream());
 
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
@@ -26,7 +26,7 @@ public class StickerGenerator {
         graphics.drawImage(originalImage, 0, 0, null);
         graphics.drawString("Topzera", 100,newHeight - 100);
 
-        ImageIO.write(newImage, "png", createFileWithDirectoryAssurance("stickers", outputFilename));
+        ImageIO.write(newImage, "png", createFileWithDirectoryAssurance("stickers", content.title() + ".jpg"));
     }
 
     private File createFileWithDirectoryAssurance(String directory, String filename) {
