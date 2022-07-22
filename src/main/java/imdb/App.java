@@ -1,10 +1,9 @@
 package imdb;
 
-import imdb.JsonParser.IMDBTopMovieResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static com.diogonunes.jcolor.Attribute.*;
@@ -16,16 +15,16 @@ public class App {
         HTTPClient httpClient = new HTTPClient();
 
         String body = httpClient.get(url);
-        List<IMDBTopMovieResponse> movies = JsonParser.parse(body);
+        JsonNode movies = JsonParser.parse(body);
 
         StickerGenerator stickerGenerator = new StickerGenerator();
 
-        for (IMDBTopMovieResponse movie : movies) {
-            System.out.println("Título: " + colorize(movie.title(), BOLD()));
-            System.out.println("Poster: " + colorize(movie.thumbnailImageUrl(), BOLD()));
-            System.out.println(colorize("Avaliação: " + movie.imdbRating(), MAGENTA_BACK(), BLACK_TEXT()));
-            stickerGenerator.generateSticker(new URL(movie.thumbnailImageUrl()).openStream(), movie.title() + ".jpg");
-            Double imDbRating = movie.imdbRating();
+        for (JsonNode movie : movies) {
+            System.out.println("Título: " + colorize(movie.get("title").asText(), BOLD()));
+            System.out.println("Poster: " + colorize(movie.get("image").asText(), BOLD()));
+            System.out.println(colorize("Avaliação: " + movie.get("imDbRating"), MAGENTA_BACK(), BLACK_TEXT()));
+            stickerGenerator.generateSticker(new URL(movie.get("image").asText()).openStream(), movie.get("title") + ".jpg");
+            Double imDbRating = Double.parseDouble(movie.get("imDbRating").asText());
             if (imDbRating == null) {
                 System.out.println("Ainda não há avaliação para o filme.");
             } else {

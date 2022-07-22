@@ -1,29 +1,18 @@
 package imdb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.List;
+import com.fasterxml.jackson.databind.*;
 
 public class JsonParser {
 
     private JsonParser() {}
 
-    public static List<IMDBTopMovieResponse> parse(String json) throws JsonProcessingException {
+    public static JsonNode parse(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.IGNORE_UNDEFINED, true);
-        IMDBTop250MoviesResponse map = mapper.readValue(json, IMDBTop250MoviesResponse.class);
-        return map.items;
-    }
-
-    private record IMDBTop250MoviesResponse(List<IMDBTopMovieResponse> items, String errorMessage) {}
-
-    record IMDBTopMovieResponse(String id, int rank, String title, String fullTitle, int year, @JsonProperty("image") String thumbnailImageUrl, String crew,
-                                @JsonProperty("imDbRating") Double imdbRating,
-                                @JsonProperty("imDbRatingCount") Double imdbRatingCount) {
+        JsonNode jsonNode = mapper.readTree(json);
+        return jsonNode.get("items");
     }
 
 }
