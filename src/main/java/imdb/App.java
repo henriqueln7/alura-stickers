@@ -1,6 +1,7 @@
 package imdb;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import sun.misc.Unsafe;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,18 +23,7 @@ public class App {
         for (JsonNode movie : movies) {
             System.out.println("Título: " + colorize(movie.get("title").asText(), BOLD()));
             System.out.println("Poster: " + colorize(movie.get("image").asText(), BOLD()));
-            System.out.println(colorize("Avaliação: " + movie.get("imDbRating"), MAGENTA_BACK(), BLACK_TEXT()));
             stickerGenerator.generateSticker(new URL(movie.get("image").asText()).openStream(), movie.get("title") + ".jpg");
-            Double imDbRating = Double.parseDouble(movie.get("imDbRating").asText());
-            if (imDbRating == null) {
-                System.out.println("Ainda não há avaliação para o filme.");
-            } else {
-                int imDbRatingFloor = (int) Math.floor(imDbRating);
-                for (int i = 0; i < imDbRatingFloor; i++) {
-                    System.out.print("🌟");
-                }
-                System.out.println();
-            }
             System.out.println("---");
         }
 
