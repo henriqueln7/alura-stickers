@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.*;
 
 import static java.awt.image.BufferedImage.TRANSLUCENT;
 
@@ -25,7 +26,13 @@ public class StickerGenerator {
         graphics.drawImage(originalImage, 0, 0, null);
         graphics.drawString("Topzera", 100,newHeight - 100);
 
-        ImageIO.write(newImage, "png", new File("stickers/" + outputFilename));
+        ImageIO.write(newImage, "png", createFileWithDirectoryAssurance("stickers", outputFilename));
+    }
+
+    private File createFileWithDirectoryAssurance(String directory, String filename) {
+        File dir = new File(directory);
+        if (!dir.exists()) dir.mkdirs();
+        return new File(directory + File.separatorChar + filename);
     }
 
 }
